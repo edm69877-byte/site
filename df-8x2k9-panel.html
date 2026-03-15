@@ -1054,7 +1054,6 @@ function blockLogin() {
             otpHidden.disabled = false; otpHidden.value = ''; digits.forEach(d => { d.textContent=''; d.classList.remove('error','filled','active'); }); digits[0].classList.add('active'); otpHidden.focus();
             document.getElementById('btnLogin').disabled = false;
             document.getElementById('btnLogin').textContent = 'Vérifier le code';
-            otpInputs[0].focus();
         }
     }, 1000);
 }
@@ -1254,7 +1253,6 @@ function renderStats() {
 
     document.getElementById('statTotal').textContent = total;
     document.getElementById('statActifs').textContent = actifs;
-    document.getElementById('statResil').textContent = resil;
     document.getElementById('statRevenu').textContent = revenu + '€';
 }
 
