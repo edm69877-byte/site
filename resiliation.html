@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résiliation — DigitalFR</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg:#0A0A0F; --card:#14141F; --primary:#6C63FF; --primary-dark:#5249d6; --white:#FFFFFF; --gray:#A0A0AB; --border:rgba(255,255,255,0.07); --error:#ef4444; --success:#22c55e; }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background:var(--bg); color:var(--white); font-family:'Inter',sans-serif; line-height:1.6; min-height:100vh; display:flex; flex-direction:column; }
+        h1,h2,.logo { font-family:'Space Grotesk',sans-serif; font-weight:700; }
+        .container { width:90%; max-width:620px; margin:0 auto; flex:1; }
+        header { padding:28px 0; display:flex; justify-content:space-between; align-items:center; }
+        .logo { font-size:1.4rem; }
+        .logo span { color:var(--primary); }
+        .back-link { color:var(--gray); text-decoration:none; font-size:0.9rem; transition:0.2s; }
+        .back-link:hover { color:var(--white); }
+        .page-header { text-align:center; margin:40px 0 50px; }
+        .page-header h1 { font-size:clamp(1.6rem,3vw,2.2rem); margin-bottom:10px; }
+        .page-header p { color:var(--gray); font-size:0.95rem; }
+        .card { background:var(--card); padding:40px; border-radius:20px; border:1px solid var(--border); box-shadow:0 20px 60px rgba(0,0,0,0.4); }
+        .warning-box { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.3); border-radius:10px; padding:16px 20px; margin-bottom:30px; font-size:0.88rem; color:#fca5a5; }
+        .warning-box strong { color:var(--error); }
+        .form-group { margin-bottom:22px; }
+        label { display:block; margin-bottom:7px; font-size:0.82rem; font-weight:600; letter-spacing:0.5px; color:var(--gray); text-transform:uppercase; }
+        input, select, textarea { width:100%; padding:13px 16px; background:#0D0D15; border:1px solid var(--border); border-radius:10px; color:var(--white); font-family:'Inter'; font-size:0.95rem; transition:0.2s; }
+        input:focus, select:focus, textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(108,99,255,0.15); }
+        textarea { resize:vertical; min-height:100px; }
+        .btn-resil { width:100%; padding:16px; background:var(--error); color:white; border:none; border-radius:10px; font-family:'Space Grotesk'; font-weight:700; font-size:1rem; cursor:pointer; transition:0.2s; }
+        .btn-resil:hover:not(:disabled) { background:#dc2626; transform:translateY(-1px); }
+        .btn-resil:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+        .error-msg { color:var(--error); font-size:0.85rem; margin-top:8px; display:none; }
+        .success-screen { display:none; text-align:center; padding:10px 0; }
+        .success-screen h2 { color:var(--success); font-size:1.6rem; margin-bottom:15px; }
+        .success-screen p { color:var(--gray); margin-bottom:10px; }
+        #cookie-banner { position:fixed; bottom:0; left:0; right:0; background:#1a1a2e; border-top:1px solid var(--border); padding:16px 30px; z-index:9999; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+        .cookie-text { font-size:0.85rem; color:var(--gray); flex:1; }
+        .cookie-text a { color:var(--primary); text-decoration:none; }
+        .cookie-btns { display:flex; gap:10px; }
+        .btn-cookie-refuse { background:transparent; border:1px solid var(--border); color:var(--gray); padding:7px 18px; border-radius:8px; font-size:0.82rem; cursor:pointer; transition:0.2s; }
+        .btn-cookie-refuse:hover { border-color:var(--gray); color:var(--white); }
+        .btn-cookie-accept { background:var(--primary); border:none; color:white; padding:7px 18px; border-radius:8px; font-size:0.82rem; font-weight:600; cursor:pointer; }
+        @media(max-width:600px) { .card{padding:25px 18px;} #cookie-banner{flex-direction:column;} }
+    </style>
+</head>
+<body>
+
+<div id="cookie-banner">
+    <p class="cookie-text">🍪 Ce site utilise des cookies fonctionnels uniquement. <a href="cookies.html" target="_blank">En savoir plus</a></p>
+    <div class="cookie-btns">
+        <button class="btn-cookie-refuse" onclick="setCookie('refused')">Refuser</button>
+        <button class="btn-cookie-accept" onclick="setCookie('accepted')">Accepter</button>
+    </div>
+</div>
+
+<div class="container">
+    <header>
+        <div class="logo">Digital<span>FR</span>⚡</div>
+        <a href="index.html" class="back-link">← Retour au site</a>
+    </header>
+
+    <div class="page-header">
+        <h1>Résilier mon abonnement</h1>
+        <p>Votre demande sera traitée sous 48h ouvrées.</p>
+    </div>
+
+    <div class="card">
+
+        <div id="resilForm">
+            <div class="warning-box">
+                <strong>⚠️ Avant de continuer</strong><br>
+                Votre site sera désactivé à la fin de votre période en cours. Pensez à sauvegarder vos contenus.
+                En cas de problème, contactez-nous d'abord : <strong>adryen.digital@gmail.com</strong>
+            </div>
+
+            <div class="form-group">
+                <label>Numéro client *</label>
+                <input type="text" id="clientId" placeholder="DF-2026-0001" required>
+                <p style="font-size:0.8rem; color:var(--gray); margin-top:5px;">Vous l'avez reçu lors de votre inscription.</p>
+            </div>
+            <div class="form-group">
+                <label>Email utilisé à l'inscription *</label>
+                <input type="email" id="email" placeholder="jean@boutique.fr" required>
+            </div>
+            <div class="form-group">
+                <label>Raison de la résiliation</label>
+                <select id="raison">
+                    <option value="Pas de réponse">Je préfère ne pas répondre</option>
+                    <option value="Trop cher">Tarif trop élevé</option>
+                    <option value="Je n'utilise plus le site">Je n'utilise plus le site</option>
+                    <option value="Pas satisfait du résultat">Pas satisfait du résultat</option>
+                    <option value="Je pars chez un concurrent">Je pars chez un concurrent</option>
+                    <option value="Fermeture boutique">Fermeture de ma boutique</option>
+                    <option value="Autre">Autre</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Commentaire (optionnel)</label>
+                <textarea id="commentaire" placeholder="Dites-nous comment on aurait pu faire mieux..."></textarea>
+            </div>
+
+            <p class="error-msg" id="errorMsg"></p>
+            <button class="btn-resil" id="btnResil" onclick="submitResil()">Confirmer ma résiliation</button>
+        </div>
+
+        <div class="success-screen" id="successScreen">
+            <div style="font-size:56px; margin-bottom:20px;">✅</div>
+            <h2>Demande enregistrée</h2>
+            <p>Votre demande de résiliation a bien été reçue.</p>
+            <p>Nous vous confirmons la désactivation par email sous <strong>48h ouvrées</strong>.</p>
+            <p style="margin-top:20px; font-size:0.85rem;">Vous changez d'avis ? Contactez-nous : <strong>adryen.digital@gmail.com</strong></p>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function setCookie(val) { localStorage.setItem('df_cookies', val); document.getElementById('cookie-banner').style.display='none'; }
+    if (localStorage.getItem('df_cookies')) document.getElementById('cookie-banner').style.display='none';
+
+    async function submitResil() {
+        const clientId    = document.getElementById('clientId').value.trim();
+        const email       = document.getElementById('email').value.trim();
+        const raison      = document.getElementById('raison').value;
+        const commentaire = document.getElementById('commentaire').value.trim();
+        const errEl       = document.getElementById('errorMsg');
+        errEl.style.display = 'none';
+
+        if (!clientId || !email) {
+            errEl.textContent = '⚠️ Numéro client et email sont obligatoires.';
+            errEl.style.display = 'block';
+            return;
+        }
+
+        const btn = document.getElementById('btnResil');
+        btn.disabled = true;
+        btn.textContent = 'Vérification...';
+
+        try {
+            const res = await fetch('https://digitalfr.online/api/resiliation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ clientId, email, raison: raison + (commentaire ? ' — ' + commentaire : '') })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('resilForm').style.display = 'none';
+                document.getElementById('successScreen').style.display = 'block';
+            } else {
+                errEl.textContent = '❌ ' + (data.error || 'Numéro client ou email incorrect.');
+                errEl.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Confirmer ma résiliation';
+            }
+        } catch(e) {
+            errEl.textContent = '❌ Erreur de connexion. Contactez-nous par email.';
+            errEl.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Confirmer ma résiliation';
+        }
+    }
+</script>
+</body>
+</html>
