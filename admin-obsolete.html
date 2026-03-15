@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DigitalFR — Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <style>
         :root {
             --bg: #080810;
@@ -457,7 +456,7 @@
             border-radius: 14px;
             padding: 18px 24px;
             display: grid;
-            grid-template-columns: 50px 1fr 140px 110px 110px 100px;
+            grid-template-columns: 50px 1fr 1fr 120px 130px 120px;
             align-items: center;
             gap: 20px;
             transition: 0.2s;
@@ -509,34 +508,6 @@
         .statut-actif .statut-dot { background: var(--success); }
         .statut-resiliation { background: rgba(248,113,113,0.1); color: var(--error); }
         .statut-resiliation .statut-dot { background: var(--error); }
-
-        .paiement-badge {
-            display: inline-flex; align-items: center; gap: 5px;
-            padding: 4px 10px; border-radius: 6px;
-            font-size: 0.72rem; font-weight: 700;
-        }
-        .paiement-paye { background: rgba(52,211,153,0.1); color: var(--success); }
-        .paiement-attente { background: rgba(251,191,36,0.1); color: var(--warning); }
-        .paiement-retard { background: rgba(248,113,113,0.1); color: var(--error); }
-        .paiement-gratuit { background: rgba(107,107,138,0.15); color: var(--gray2); }
-
-        .site-status {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 0.78rem; color: var(--gray2);
-        }
-        .site-online { color: var(--success); }
-        .site-offline { color: var(--error); }
-        .site-suspended { color: var(--warning); }
-
-        .btn-toggle-site {
-            padding: 5px 12px; border-radius: 6px; border: none;
-            font-family: var(--font); font-size: 0.75rem; font-weight: 700;
-            cursor: pointer; transition: 0.2s;
-        }
-        .btn-toggle-on { background: rgba(52,211,153,0.15); color: var(--success); }
-        .btn-toggle-on:hover { background: rgba(52,211,153,0.25); }
-        .btn-toggle-off { background: rgba(248,113,113,0.1); color: var(--error); }
-        .btn-toggle-off:hover { background: rgba(248,113,113,0.2); }
 
         .row-actions { display: flex; gap: 8px; justify-content: flex-end; }
 
@@ -714,55 +685,6 @@
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* CHARTS */
-        .charts-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .chart-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 28px;
-        }
-
-        .chart-title {
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: var(--gray2);
-            margin-bottom: 20px;
-        }
-
-        .chart-wrap { position: relative; }
-
-        .chart-total {
-            text-align: center;
-            margin-top: 15px;
-        }
-
-        .chart-total-value {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: var(--primary);
-            display: block;
-        }
-
-        .chart-total-label {
-            font-size: 0.75rem;
-            color: var(--gray2);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        @media (max-width: 900px) {
-            .charts-grid { grid-template-columns: 1fr; }
-        }
-
         @media (max-width: 900px) {
             .sidebar { display: none; }
             .main { margin-left: 0; padding: 20px; }
@@ -860,9 +782,9 @@
                     <span class="stat-label">Clients actifs</span>
                 </div>
                 <div class="stat-card red">
-                    <span class="stat-icon">🚨</span>
-                    <span class="stat-value" id="statRetard">—</span>
-                    <span class="stat-label">Paiements en retard</span>
+                    <span class="stat-icon">⚠️</span>
+                    <span class="stat-value" id="statResil">—</span>
+                    <span class="stat-label">Résiliations</span>
                 </div>
             </div>
 
@@ -870,33 +792,6 @@
             <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px;">
                 <h3 style="font-size:1rem; font-weight:700; margin-bottom:20px; color:var(--gray2); text-transform:uppercase; letter-spacing:1px;">Derniers inscrits</h3>
                 <div id="recentClients"></div>
-            </div>
-
-            <!-- GRAPHIQUES -->
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <div class="chart-title">📊 Revenus mensuels</div>
-                    <div class="chart-wrap">
-                        <canvas id="chartRevenu" height="200"></canvas>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <div class="chart-title">🥧 Répartition des formules</div>
-                    <div class="chart-wrap">
-                        <canvas id="chartFormules" height="200"></canvas>
-                    </div>
-                    <div class="chart-total">
-                        <span class="chart-total-value" id="chartTotalClients">—</span>
-                        <span class="chart-total-label">clients actifs</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chart-card" style="margin-top:20px;">
-                <div class="chart-title">📈 Croissance des clients actifs</div>
-                <div class="chart-wrap">
-                    <canvas id="chartCroissance" height="100"></canvas>
-                </div>
             </div>
         </div>
 
@@ -1071,161 +966,9 @@ async function loadDashboard() {
         renderStats();
         renderClients();
         renderRecent();
-        renderCharts();
     } catch(e) {
         showToast('Erreur de chargement', 'error');
     }
-}
-
-let chartRevenu = null;
-let chartFormules = null;
-let chartCroissance = null;
-
-function renderCharts() {
-    // ===== DONNÉES =====
-    const now = new Date();
-    const mois = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
-
-    // Revenus par mois (6 derniers mois)
-    const revenuParMois = Array(6).fill(0);
-    const labelsMois = [];
-    for (let i = 5; i >= 0; i--) {
-        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-        labelsMois.push(mois[d.getMonth()]);
-    }
-
-    clients.forEach(c => {
-        if (c.paiement !== 'paye' && c.statut !== 'actif') return;
-        const dateRef = c.dateDernierPaiement || c.date;
-        if (!dateRef) return;
-        const d = new Date(dateRef);
-        const diffMois = (now.getFullYear() - d.getFullYear()) * 12 + (now.getMonth() - d.getMonth());
-        if (diffMois >= 0 && diffMois < 6) {
-            const idx = 5 - diffMois;
-            const f = c.formule || '';
-            revenuParMois[idx] += f.includes('60') ? 60 : f.includes('49') ? 49 : 30;
-        }
-    });
-
-    // Formules
-    const starters = clients.filter(c => c.statut === 'actif' && (c.formule||'').includes('30')).length;
-    const pros     = clients.filter(c => c.statut === 'actif' && (c.formule||'').includes('49')).length;
-    const premiums = clients.filter(c => c.statut === 'actif' && (c.formule||'').includes('60')).length;
-    const totalActifs = starters + pros + premiums;
-    document.getElementById('chartTotalClients').textContent = totalActifs;
-
-    // Croissance (clients actifs cumulés par mois)
-    const croissance = Array(6).fill(0);
-    for (let i = 0; i < 6; i++) {
-        const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
-        const next = new Date(d.getFullYear(), d.getMonth() + 1, 1);
-        croissance[i] = clients.filter(c => {
-            const dateC = new Date(c.date || c.dateInscription || now);
-            return dateC < next && (c.statut === 'actif' || c.statut === 'prospect');
-        }).length;
-    }
-
-    // ===== CHART CONFIG =====
-    Chart.defaults.color = '#9090B0';
-    Chart.defaults.font.family = 'Syne';
-
-    // Détruire les anciens charts si ils existent
-    if (chartRevenu) chartRevenu.destroy();
-    if (chartFormules) chartFormules.destroy();
-    if (chartCroissance) chartCroissance.destroy();
-
-    // REVENUS
-    chartRevenu = new Chart(document.getElementById('chartRevenu'), {
-        type: 'bar',
-        data: {
-            labels: labelsMois,
-            datasets: [{
-                label: 'Revenus (€)',
-                data: revenuParMois,
-                backgroundColor: 'rgba(123,110,246,0.7)',
-                borderColor: 'rgba(123,110,246,1)',
-                borderWidth: 1,
-                borderRadius: 8,
-                borderSkipped: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: { label: ctx => ` ${ctx.raw}€` }
-                }
-            },
-            scales: {
-                x: { grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false } },
-                y: {
-                    grid: { color: 'rgba(255,255,255,0.04)' },
-                    border: { display: false },
-                    ticks: { callback: v => v + '€' },
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    // FORMULES (donut)
-    chartFormules = new Chart(document.getElementById('chartFormules'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Starter 30€', 'Pro 49€', 'Premium 60€'],
-            datasets: [{
-                data: [starters || 0.01, pros || 0.01, premiums || 0.01],
-                backgroundColor: ['rgba(107,107,138,0.7)', 'rgba(123,110,246,0.8)', 'rgba(201,168,76,0.8)'],
-                borderColor: ['#16162A', '#16162A', '#16162A'],
-                borderWidth: 3,
-                hoverOffset: 8
-            }]
-        },
-        options: {
-            responsive: true,
-            cutout: '72%',
-            plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: { padding: 15, usePointStyle: true, pointStyleWidth: 8 }
-                }
-            }
-        }
-    });
-
-    // CROISSANCE (courbe)
-    chartCroissance = new Chart(document.getElementById('chartCroissance'), {
-        type: 'line',
-        data: {
-            labels: labelsMois,
-            datasets: [{
-                label: 'Clients',
-                data: croissance,
-                borderColor: 'rgba(201,168,76,1)',
-                backgroundColor: 'rgba(201,168,76,0.08)',
-                borderWidth: 2,
-                pointBackgroundColor: 'rgba(201,168,76,1)',
-                pointRadius: 5,
-                pointHoverRadius: 7,
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { color: 'rgba(255,255,255,0.04)' }, border: { display: false } },
-                y: {
-                    grid: { color: 'rgba(255,255,255,0.04)' },
-                    border: { display: false },
-                    beginAtZero: true,
-                    ticks: { stepSize: 1 }
-                }
-            }
-        }
-    });
 }
 
 function renderStats() {
@@ -1234,7 +977,7 @@ function renderStats() {
     const resil = clients.filter(c => c.statut === 'resiliation_demandee' || c.statut === 'resilie').length;
 
     const revenu = clients
-        .filter(c => c.paiement === 'paye' || c.statut === 'actif')
+        .filter(c => c.statut === 'actif')
         .reduce((sum, c) => {
             const f = c.formule || '';
             if (f.includes('60')) return sum + 60;
@@ -1242,10 +985,6 @@ function renderStats() {
             if (f.includes('30')) return sum + 30;
             return sum;
         }, 0);
-    
-    const retards = clients.filter(c => c.paiement === 'retard').length;
-    const retardEl = document.getElementById('statRetard');
-    if (retardEl) retardEl.textContent = retards;
 
     document.getElementById('statTotal').textContent = total;
     document.getElementById('statActifs').textContent = actifs;
@@ -1280,19 +1019,6 @@ function getFormuleBadge(formule) {
     return `<span class="formule-badge formule-starter">Starter</span>`;
 }
 
-function getPaiementBadge(paiement) {
-    if (paiement === 'paye') return `<span class="paiement-badge paiement-paye">✅ Payé</span>`;
-    if (paiement === 'retard') return `<span class="paiement-badge paiement-retard">🚨 Retard</span>`;
-    if (paiement === 'gratuit') return `<span class="paiement-badge paiement-gratuit">🆓 Gratuit</span>`;
-    return `<span class="paiement-badge paiement-attente">⏳ En attente</span>`;
-}
-
-function getSiteStatus(c) {
-    if (c.siteActif === false) return `<span class="site-status site-suspended">⏸ Suspendu</span>`;
-    if (!c.siteUrl) return `<span class="site-status">— Sans site</span>`;
-    return `<span class="site-status site-online">🟢 En ligne</span>`;
-}
-
 function renderClients(filtered = null) {
     const list = filtered || clients;
     const grid = document.getElementById('clientsGrid');
@@ -1310,12 +1036,12 @@ function renderClients(filtered = null) {
             <div class="client-avatar" style="background:${bg}; color:${fg}">${getInitials(c.nom)}</div>
             <div>
                 <div class="client-name">${c.nom || '—'}</div>
-                <div class="client-boutique">${c.boutique || '—'} · ${c.ville || ''}</div>
+                <div class="client-boutique">${c.boutique || '—'}</div>
             </div>
-            <div>${getFormuleBadge(c.formule)}<br><span style="font-size:0.72rem;color:var(--gray2);margin-top:4px;display:block;">${c.clientId || ''}</span></div>
+            <div class="client-id">${c.clientId || '—'}<br><span style="color:var(--gray);font-size:0.72rem;">${c.ville || ''}</span></div>
+            <div class="client-secteur">${c.secteur || '—'}</div>
+            <div>${getFormuleBadge(c.formule)}</div>
             <div>${getStatutBadge(c.statut)}</div>
-            <div>${getPaiementBadge(c.paiement)}</div>
-            <div>${getSiteStatus(c)}</div>
         </div>`;
     }).join('');
 }
@@ -1420,41 +1146,6 @@ function openClient(index) {
 
         ${c.message ? `<div class="modal-field"><span class="modal-label">Message</span><div class="modal-value">${c.message}</div></div>` : ''}
 
-        <div class="modal-field">
-            <span class="modal-label">URL du site</span>
-            <input class="modal-input" id="editSiteUrl" value="${c.siteUrl || ''}" placeholder="https://nom-client.digitalfr.online">
-        </div>
-        <div class="modal-field">
-            <span class="modal-label">Slug serveur</span>
-            <input class="modal-input" id="editSiteSlug" value="${c.siteSlug || ''}" placeholder="ex: 001-martin">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-            <div class="modal-field">
-                <span class="modal-label">Paiement</span>
-                <select class="modal-select" id="editPaiement">
-                    <option value="en_attente" ${(c.paiement||'en_attente')==='en_attente'?'selected':''}>⏳ En attente</option>
-                    <option value="paye" ${c.paiement==='paye'?'selected':''}>✅ Payé</option>
-                    <option value="retard" ${c.paiement==='retard'?'selected':''}>🚨 Retard</option>
-                    <option value="gratuit" ${c.paiement==='gratuit'?'selected':''}>🆓 Gratuit</option>
-                </select>
-            </div>
-            <div class="modal-field">
-                <span class="modal-label">Site actif</span>
-                <select class="modal-select" id="editSiteActif">
-                    <option value="true" ${c.siteActif!==false?'selected':''}>🟢 Actif</option>
-                    <option value="false" ${c.siteActif===false?'selected':''}>⏸ Suspendu</option>
-                </select>
-            </div>
-        </div>
-        ${c.notes !== undefined ? `
-        <div class="modal-field">
-            <span class="modal-label">Notes internes</span>
-            <textarea class="modal-input" id="editNotes" style="min-height:80px;resize:vertical;">${c.notes||''}</textarea>
-        </div>` : `
-        <div class="modal-field">
-            <span class="modal-label">Notes internes</span>
-            <textarea class="modal-input" id="editNotes" style="min-height:80px;resize:vertical;"></textarea>
-        </div>`}
         <div class="modal-actions">
             <button class="btn-save" onclick="saveClient(${index})">💾 Sauvegarder</button>
             <button class="btn-delete-confirm" onclick="confirmDelete(${index})">🗑 Supprimer</button>
@@ -1467,42 +1158,15 @@ function openClient(index) {
 
 async function saveClient(index) {
     const c = clients[index];
-    const siteActifPrev = c.siteActif;
-    const siteActifNew = document.getElementById('editSiteActif').value === 'true';
-
-    const updates = {
-        statut:    document.getElementById('editStatut').value,
-        paiement:  document.getElementById('editPaiement').value,
-        siteUrl:   document.getElementById('editSiteUrl').value.trim(),
-        siteSlug:  document.getElementById('editSiteSlug').value.trim(),
-        siteActif: siteActifNew,
-        notes:     document.getElementById('editNotes').value.trim()
-    };
-
-    // Si paiement marqué comme payé, enregistrer la date
-    if (updates.paiement === 'paye' && c.paiement !== 'paye') {
-        updates.dateDernierPaiement = new Date().toISOString();
-    }
-
-    Object.assign(c, updates);
+    const newStatut = document.getElementById('editStatut').value;
+    c.statut = newStatut;
 
     try {
-        // Sauvegarder les données
         const res = await fetch(`${API}/admin/clients/${c.clientId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` },
-            body: JSON.stringify(updates)
+            body: JSON.stringify({ statut: newStatut })
         });
-
-        // Si le statut du site a changé, activer/désactiver
-        if (siteActifPrev !== siteActifNew && c.siteSlug) {
-            await fetch(`${API}/admin/clients/${c.clientId}/toggle-site`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${sessionToken}` },
-                body: JSON.stringify({ activate: siteActifNew })
-            });
-        }
-
         if (res.ok) {
             closeModalDirect();
             renderStats();
