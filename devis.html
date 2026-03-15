@@ -317,7 +317,7 @@
         btn.textContent = 'Envoi en cours...';
 
         try {
-            const res = await fetch('https://digitalfr.online:3000/api/devis', {
+            const res = await fetch('https://digitalfr.online/api/devis', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nom, email, boutique, secteur, ville, tel, formule, dejaSite, message, cgu: true })
