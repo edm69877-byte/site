@@ -1066,15 +1066,19 @@ async function loadDashboard() {
             headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
         if (res.status === 401) { logout(); return; }
+        if (!res.ok) {
+            showToast('❌ Erreur serveur ' + res.status, 'error');
+            return;
+        }
         const data = await res.json();
         clients = data.clients || [];
         renderStats();
         renderClients();
         renderRecent();
-        renderCharts();
+        setTimeout(() => renderCharts(), 100);
     } catch(e) {
         console.error('loadDashboard error:', e);
-        showToast('❌ Erreur de chargement des données', 'error');
+        showToast('❌ Erreur de connexion', 'error');
     }
 }
 
@@ -1587,23 +1591,9 @@ function showToast(msg, type = 'success') {
 const existingToken = sessionStorage.getItem('adminToken');
 if (existingToken) {
     sessionToken = existingToken;
-    // Vérifier que le token est encore valide
-    fetch(`${API}/admin/clients`, {
-        headers: { 'Authorization': `Bearer ${sessionToken}` }
-    }).then(r => {
-        if (r.ok) {
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            loadDashboard();
-        } else {
-            // Token expiré, forcer reconnexion
-            sessionStorage.removeItem('adminToken');
-            sessionToken = null;
-        }
-    }).catch(() => {
-        sessionStorage.removeItem('adminToken');
-        sessionToken = null;
-    });
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadDashboard();
 }
 </script>
 </body>
