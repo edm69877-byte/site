@@ -813,10 +813,10 @@
     <aside class="sidebar">
         <div class="sidebar-logo">Digital<span>FR</span>⚡</div>
         <nav class="sidebar-nav">
-            <div class="nav-item active" onclick="showPage('overview')">
+            <div class="nav-item active" onclick="showPage('overview', this)">
                 <span class="nav-icon">📊</span> Vue d'ensemble
             </div>
-            <div class="nav-item" onclick="showPage('clients')">
+            <div class="nav-item" onclick="showPage('clients', this)">
                 <span class="nav-icon">👥</span> Clients
             </div>
         </nav>
@@ -1073,7 +1073,8 @@ async function loadDashboard() {
         renderRecent();
         renderCharts();
     } catch(e) {
-        showToast('Erreur de chargement', 'error');
+        console.error('loadDashboard error:', e);
+        showToast('❌ Erreur de chargement des données', 'error');
     }
 }
 
@@ -1505,12 +1506,16 @@ async function saveClient(index) {
 
         if (res.ok) {
             closeModalDirect();
-            renderStats();
-            filterClients();
-            renderRecent();
+            await loadDashboard();
             showToast('✅ Client mis à jour', 'success');
+        } else {
+            const err = await res.json().catch(() => ({}));
+            showToast('❌ ' + (err.error || 'Erreur serveur'), 'error');
         }
-    } catch(e) { showToast('❌ Erreur', 'error'); }
+    } catch(e) {
+        console.error('saveClient error:', e);
+        showToast('❌ Erreur de connexion', 'error');
+    }
 }
 
 function confirmDelete(index) {
@@ -1536,12 +1541,11 @@ async function deleteClient(index) {
             headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
         if (res.ok) {
-            clients.splice(index, 1);
             closeModalDirect();
-            renderStats();
-            filterClients();
-            renderRecent();
+            await loadDashboard();
             showToast('🗑 Client supprimé', 'success');
+        } else {
+            showToast('❌ Erreur suppression', 'error');
         }
     } catch(e) { showToast('❌ Erreur', 'error'); }
 }
@@ -1550,12 +1554,13 @@ function closeModal(e) { if (e.target === document.getElementById('modalOverlay'
 function closeModalDirect() { document.getElementById('modalOverlay').classList.remove('open'); }
 
 // ===== NAVIGATION =====
-function showPage(name) {
+function showPage(name, el) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById(`page-${name}`).classList.add('active');
-    event.currentTarget.classList.add('active');
+    if (el) el.classList.add('active');
     if (name === 'clients') filterClients();
+    if (name === 'overview') renderCharts();
 }
 
 // ===== LOGOUT =====
@@ -1582,9 +1587,23 @@ function showToast(msg, type = 'success') {
 const existingToken = sessionStorage.getItem('adminToken');
 if (existingToken) {
     sessionToken = existingToken;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    loadDashboard();
+    // Vérifier que le token est encore valide
+    fetch(`${API}/admin/clients`, {
+        headers: { 'Authorization': `Bearer ${sessionToken}` }
+    }).then(r => {
+        if (r.ok) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            loadDashboard();
+        } else {
+            // Token expiré, forcer reconnexion
+            sessionStorage.removeItem('adminToken');
+            sessionToken = null;
+        }
+    }).catch(() => {
+        sessionStorage.removeItem('adminToken');
+        sessionToken = null;
+    });
 }
 </script>
 </body>
