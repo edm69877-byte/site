@@ -270,10 +270,10 @@
                         <option value="30">30 derniers jours</option>
                         <option value="90">3 derniers mois</option>
                         <option value="180">6 derniers mois</option>
-                        <option value="365">Cette année</option>
+                        <option value="365">Cette annee</option>
                     </select>
-                    <button onclick="exportClients()" style="background:var(--gold);color:#000;border:none;border-radius:10px;padding:9px 18px;font-family:var(--font);font-weight:700;font-size:0.82rem;cursor:pointer;transition:0.2s;white-space:nowrap;" onmouseover="this.style.background='#b8962e'" onmouseout="this.style.background='var(--gold)'">
-                        📥 Exporter CSV
+                    <button onclick="exportClients()" style="background:var(--gold);color:#000;border:none;border-radius:10px;padding:9px 18px;font-family:var(--font);font-weight:700;font-size:0.82rem;cursor:pointer;" onmouseover="this.style.background='#b8962e'" onmouseout="this.style.background='var(--gold)'">
+                        Export CSV
                     </button>
                 </div>
             </div>
@@ -705,53 +705,37 @@ function logout(){
 
 // EXPORT CSV
 function exportClients() {
-    const period = document.getElementById('exportPeriod').value;
-    const now = new Date();
-    let list = [...clients];
-
+    var period = document.getElementById('exportPeriod').value;
+    var now = new Date();
+    var list = clients.slice();
     if (period !== 'tous') {
-        const days = parseInt(period);
-        const cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-        list = list.filter(c => {
+        var days = parseInt(period);
+        var cutoff = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+        list = list.filter(function(c) {
             if (!c.date) return false;
-            // Parse date format "DD/MM/YYYY HH:MM:SS"
-            const parts = c.date.split(' ')[0].split('/');
-            const d = new Date(parts[2], parts[1]-1, parts[0]);
+            var parts = c.date.split(' ')[0].split('/');
+            var d = new Date(parts[2], parts[1]-1, parts[0]);
             return d >= cutoff;
         });
     }
-
-    if (!list.length) { showToast('Aucun client sur cette période', 'error'); return; }
-
-    const headers = ['N° Client','Nom','Boutique','Secteur','Ville','Email','Téléphone','Formule','Statut','Paiement','Site URL','Date inscription','Notes'];
-    const rows = list.map(c => [
-        c.clientId||'',
-        c.nom||'',
-        c.boutique||'',
-        c.secteur||'',
-        c.ville||'',
-        c.email||'',
-        c.tel||'',
-        c.formule||'',
-        c.statut||'',
-        c.paiement||'en_attente',
-        c.siteUrl||'',
-        c.date||'',
-        (c.notes||'').replace(/
-/g,' ')
-    ].map(v => `"${String(v).replace(/"/g,'""')}"`).join(';'));
-
-    const csv = '﻿' + [headers.join(';'), ...rows].join('
-');
-    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const periodLabel = document.getElementById('exportPeriod').options[document.getElementById('exportPeriod').selectedIndex].text.toLowerCase().replace(/ /g,'-');
+    if (!list.length) { showToast('Aucun client sur cette periode', 'error'); return; }
+    var headers = ['N Client','Nom','Boutique','Secteur','Ville','Email','Tel','Formule','Statut','Paiement','Site URL','Date','Notes'];
+    var rows = list.map(function(c) {
+        return [c.clientId||'',c.nom||'',c.boutique||'',c.secteur||'',c.ville||'',c.email||'',c.tel||'',c.formule||'',c.statut||'',c.paiement||'',c.siteUrl||'',c.date||'',(c.notes||'').replace(/\n/g,' ')].map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(';');
+    });
+    var csv = [headers.join(';')].concat(rows).join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    var sel = document.getElementById('exportPeriod');
+    var label = sel.options[sel.selectedIndex].text.toLowerCase().replace(/ /g,'-');
     a.href = url;
-    a.download = `digitalfr-clients-${periodLabel}-${now.toISOString().slice(0,10)}.csv`;
+    a.download = 'digitalfr-clients-' + label + '-' + now.toISOString().slice(0,10) + '.csv';
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showToast(`✅ ${list.length} client(s) exporté(s)`, 'success');
+    showToast(list.length + ' client(s) exporte(s)', 'success');
 }
 
 // TOAST
