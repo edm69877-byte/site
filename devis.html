@@ -179,22 +179,22 @@
                 <label>Formule souhaitée *</label>
                 <div class="formule-grid">
                     <label class="formule-card" id="card-starter">
-                        <input type="radio" name="formule" value="Starter — 49€/mois" class="formule-radio" onchange="selectFormule('starter')">
+                        <input type="radio" name="formule" value="Starter — 49€/mois (Essai 14j)" class="formule-radio" onchange="selectFormule('starter')">
                         <div class="formule-name">Starter</div>
-                        <div class="formule-price">49€ <span>/mois</span></div>
+                        <div class="formule-price"><del style="color:var(--gray); font-size: 0.8rem;">49€</del> 0€ <span>/ 14 jours</span></div>
                         <div class="formule-desc">Site vitrine essentiel</div>
                     </label>
                     <label class="formule-card selected" id="card-pro">
                         <div class="badge">⭐ Populaire</div>
-                        <input type="radio" name="formule" value="Pro — 79€/mois" class="formule-radio" checked onchange="selectFormule('pro')">
+                        <input type="radio" name="formule" value="Pro — 79€/mois (Essai 14j)" class="formule-radio" checked onchange="selectFormule('pro')">
                         <div class="formule-name">Pro</div>
-                        <div class="formule-price">79€ <span>/mois</span></div>
+                        <div class="formule-price"><del style="color:var(--gray); font-size: 0.8rem;">79€</del> 0€ <span>/ 14 jours</span></div>
                         <div class="formule-desc">Boutique + WhatsApp + Maps</div>
                     </label>
                     <label class="formule-card" id="card-premium">
-                        <input type="radio" name="formule" value="Premium — 129€/mois" class="formule-radio" onchange="selectFormule('premium')">
+                        <input type="radio" name="formule" value="Premium — 129€/mois (Essai 14j)" class="formule-radio" onchange="selectFormule('premium')">
                         <div class="formule-name">Premium</div>
-                        <div class="formule-price">129€ <span>/mois</span></div>
+                        <div class="formule-price"><del style="color:var(--gray); font-size: 0.8rem;">129€</del> 0€ <span>/ 14 jours</span></div>
                         <div class="formule-desc">Sur-mesure complet</div>
                     </label>
                 </div>
@@ -291,7 +291,7 @@
         const secteur = document.getElementById('secteur').value;
         const ville = document.getElementById('ville').value.trim();
         const tel = document.getElementById('tel').value.trim();
-        const formule = document.querySelector('input[name="formule"]:checked')?.value || 'Pro — 79€/mois';
+        const formule = document.querySelector('input[name="formule"]:checked')?.value || 'Pro — 79€/mois (Essai 14j)';
         const dejaSite = document.querySelector('input[name="dejaSite"]:checked')?.value || 'Non';
         const message = document.getElementById('message').value.trim();
 
