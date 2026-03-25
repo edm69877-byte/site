@@ -322,9 +322,9 @@
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:30px;margin-top:25px;">
                     <div>
-                        <div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span style="font-size:0.85rem;color:var(--gray2);">Formule moyenne (€/mois)</span><span style="font-weight:700;color:var(--success);" id="valFormule">49€</span></div>
-                        <input type="range" id="sliderFormule" min="30" max="60" value="49" oninput="updatePrevisions()" style="width:100%;accent-color:var(--success);">
-                        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--gray);margin-top:4px;"><span>30€</span><span>60€</span></div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span style="font-size:0.85rem;color:var(--gray2);">Formule moyenne (€/mois)</span><span style="font-weight:700;color:var(--success);" id="valFormule">79€</span></div>
+                        <input type="range" id="sliderFormule" min="49" max="129" value="79" oninput="updatePrevisions()" style="width:100%;accent-color:var(--success);">
+                        <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--gray);margin-top:4px;"><span>49€</span><span>129€</span></div>
                     </div>
                     <div>
                         <div style="display:flex;justify-content:space-between;margin-bottom:10px;"><span style="font-size:0.85rem;color:var(--gray2);">Horizon de projection</span><span style="font-weight:700;color:var(--white);" id="valHorizon">12 mois</span></div>
@@ -444,7 +444,7 @@ function renderStats() {
     const actifs = clients.filter(c=>c.statut==='actif').length;
     const retards = clients.filter(c=>c.paiement==='retard').length;
     const revenu = clients.filter(c=>c.paiement==='paye'||c.statut==='actif').reduce((sum,c)=>{
-        const f=c.formule||''; return sum+(f.includes('60')?60:f.includes('49')?49:30);
+        const f=c.formule||''; return sum+(f.includes('129')?129:f.includes('79')?79:49);
     },0);
     document.getElementById('statTotal').textContent=total;
     document.getElementById('statActifs').textContent=actifs;
@@ -464,8 +464,8 @@ function getStatutBadge(s) {
 }
 function getFormuleBadge(f) {
     if(!f) return '';
-    if(f.includes('60')) return `<span class="formule-badge formule-premium">Premium</span>`;
-    if(f.includes('49')) return `<span class="formule-badge formule-pro">Pro</span>`;
+    if(f.includes('129')) return `<span class="formule-badge formule-premium">Premium</span>`;
+    if(f.includes('79')) return `<span class="formule-badge formule-pro">Pro</span>`;
     return `<span class="formule-badge formule-starter">Starter</span>`;
 }
 function getPaiementBadge(p) {
@@ -521,7 +521,7 @@ function renderCharts() {
         if(c.paiement!=='paye'&&c.statut!=='actif') return;
         const dateRef=c.dateDernierPaiement||c.date; if(!dateRef) return;
         const d=new Date(dateRef), diff=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth());
-        if(diff>=0&&diff<6){const f=c.formule||''; revenuParMois[5-diff]+=(f.includes('60')?60:f.includes('49')?49:30);}
+        if(diff>=0&&diff<6){const f=c.formule||''; revenuParMois[5-diff]+=(f.includes('129')?129:f.includes('79')?79:49);}
     });
     const starters=clients.filter(c=>c.statut==='actif'&&(c.formule||'').includes('30')).length;
     const pros=clients.filter(c=>c.statut==='actif'&&(c.formule||'').includes('49')).length;
@@ -533,7 +533,7 @@ function renderCharts() {
     Chart.defaults.color='#9090B0'; Chart.defaults.font.family='Syne';
     if(chartRevenu)chartRevenu.destroy(); if(chartFormules)chartFormules.destroy(); if(chartCroissance)chartCroissance.destroy();
     chartRevenu=new Chart(document.getElementById('chartRevenu'),{type:'bar',data:{labels:labelsMois,datasets:[{label:'Revenus',data:revenuParMois,backgroundColor:'rgba(123,110,246,0.7)',borderColor:'rgba(123,110,246,1)',borderWidth:1,borderRadius:8,borderSkipped:false}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>` ${ctx.raw}€`}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}},y:{grid:{color:'rgba(255,255,255,0.04)'},border:{display:false},ticks:{callback:v=>v+'€'},beginAtZero:true}}}});
-    chartFormules=new Chart(document.getElementById('chartFormules'),{type:'doughnut',data:{labels:['Starter 30€','Pro 49€','Premium 60€'],datasets:[{data:[starters||0.01,pros||0.01,premiums||0.01],backgroundColor:['rgba(107,107,138,0.7)','rgba(123,110,246,0.8)','rgba(201,168,76,0.8)'],borderColor:['#16162A','#16162A','#16162A'],borderWidth:3,hoverOffset:8}]},options:{responsive:true,cutout:'72%',plugins:{legend:{position:'bottom',labels:{padding:15,usePointStyle:true,pointStyleWidth:8}}}}});
+    chartFormules=new Chart(document.getElementById('chartFormules'),{type:'doughnut',data:{labels:['Starter 49€','Pro 79€','Premium 129€'],datasets:[{data:[starters||0.01,pros||0.01,premiums||0.01],backgroundColor:['rgba(107,107,138,0.7)','rgba(123,110,246,0.8)','rgba(201,168,76,0.8)'],borderColor:['#16162A','#16162A','#16162A'],borderWidth:3,hoverOffset:8}]},options:{responsive:true,cutout:'72%',plugins:{legend:{position:'bottom',labels:{padding:15,usePointStyle:true,pointStyleWidth:8}}}}});
     chartCroissance=new Chart(document.getElementById('chartCroissance'),{type:'line',data:{labels:labelsMois,datasets:[{data:croissance,borderColor:'rgba(201,168,76,1)',backgroundColor:'rgba(201,168,76,0.08)',borderWidth:2,pointBackgroundColor:'rgba(201,168,76,1)',pointRadius:5,tension:0.4,fill:true}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}},y:{grid:{color:'rgba(255,255,255,0.04)'},border:{display:false},beginAtZero:true,ticks:{stepSize:1}}}}});
 }
 
