@@ -310,6 +310,12 @@ html, body { overflow-x: hidden; position: relative; width: 100%; }
 
     <canvas id="bg-canvas"></canvas>
 
+    <div id="loading-overlay" style="position: fixed; inset: 0; background: #0A0A0F; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease;">
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; font-weight: 700; color: white; margin-bottom: 20px;">Digital<span style="color: #6C63FF;">FR</span>⚡</div>
+        <div style="width: 200px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; position: relative;">
+            <div id="loading-bar" style="position: absolute; left: 0; top: 0; height: 100%; background: #6C63FF; width: 0%; transition: width 0.4s ease;"></div>
+        </div>
+    </div>
     <header id="header">
         <div class="container">
             <nav>
@@ -583,6 +589,25 @@ html, body { overflow-x: hidden; position: relative; width: 100%; }
         function createParticles() { particles = []; for (let i = 0; i < 80; i++) { particles.push(new Particle()); } }
         function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); requestAnimationFrame(animate); }
         window.addEventListener('resize', initCanvas);
+        window.addEventListener('load', () => {
+            const bar = document.getElementById('loading-bar');
+            const overlay = document.getElementById('loading-overlay');
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 30;
+                if (width >= 100) {
+                    width = 100;
+                    clearInterval(interval);
+                    bar.style.width = '100%';
+                    setTimeout(() => {
+                        overlay.style.opacity = '0';
+                        setTimeout(() => overlay.style.display = 'none', 800);
+                    }, 200);
+                } else {
+                    bar.style.width = width + '%';
+                }
+            }, 100);
+        });
         initCanvas(); createParticles(); animate();
 
         const observer = new IntersectionObserver((entries) => {
