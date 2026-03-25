@@ -178,6 +178,19 @@
         /* RESPONSIVE */
         @media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } .charts-grid { grid-template-columns: 1fr; } }
         @media (max-width: 900px) { .sidebar { display: none; } .main { margin-left: 0; padding: 20px; } .client-row { grid-template-columns: 42px 1fr auto; } }
+    
+        /* TACHES & QA */
+        .kanban-board { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; margin-top: 20px; }
+        .kanban-col { background: var(--card2); border: 1px solid var(--border); border-radius: 12px; min-width: 280px; flex: 1; padding: 15px; }
+        .kanban-header { font-weight: 700; margin-bottom: 15px; display: flex; justify-content: space-between; color: var(--gray2); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 1px; }
+        .kanban-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; margin-bottom: 10px; cursor: grab; transition: 0.2s; }
+        .kanban-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        .quick-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .qa-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: 0.2s; color: white; }
+        .qa-wa { background: #25D366; } .qa-wa:hover { background: #1ebd59; }
+        .qa-mail { background: #4285F4; } .qa-mail:hover { background: #3367d6; }
+        .qa-site { background: var(--bg2); border: 1px solid var(--border); color: var(--white); } .qa-site:hover { background: var(--bg3); color: var(--white); }
+
     </style>
 </head>
 <body>
@@ -224,6 +237,7 @@
             <div class="nav-item active" onclick="showPage('overview', this)"><span class="nav-icon">📊</span> Vue d'ensemble</div>
             <div class="nav-item" onclick="showPage('clients', this)"><span class="nav-icon">👥</span> Clients</div>
             <div class="nav-item" onclick="showPage('previsions', this)"><span class="nav-icon">📈</span> Prévisions</div>
+            <div class="nav-item" onclick="showPage('taches', this)"><span class="nav-icon">📋</span> Suivi 48h</div>
         </nav>
         <div class="sidebar-footer">
             <button class="btn-logout" onclick="logout()">🚪 Se déconnecter</button>
@@ -288,6 +302,50 @@
                 <button class="filter-btn" onclick="setFilter('resiliation_demandee', this)">Résiliations</button>
             </div>
             <div class="clients-grid" id="clientsGrid"></div>
+        </div>
+
+        
+        <!-- TACHES -->
+        <div class="page" id="page-taches">
+            <div class="topbar">
+                <div><h1 class="page-title">Suivi des Livraisons (48h)</h1><p class="page-sub">Gérez vos créations de sites en cours</p></div>
+                <button style="background:var(--primary);color:white;border:none;border-radius:10px;padding:9px 18px;font-family:var(--font);font-weight:700;font-size:0.82rem;cursor:pointer;">+ Nouvelle Tâche</button>
+            </div>
+            <div class="kanban-board">
+                <div class="kanban-col">
+                    <div class="kanban-header"><span>⏳ À faire (J-2)</span><span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:10px;">2</span></div>
+                    <div class="kanban-card">
+                        <div style="font-size:0.75rem;color:var(--warning);margin-bottom:5px;font-weight:700;">URGENT - Reste 24h</div>
+                        <div style="font-weight:700;margin-bottom:5px;">Fleur d'Amour</div>
+                        <div style="font-size:0.8rem;color:var(--gray2);">Template : Pro 79€</div>
+                    </div>
+                    <div class="kanban-card">
+                        <div style="font-size:0.75rem;color:var(--gray2);margin-bottom:5px;font-weight:700;">Nouveau client</div>
+                        <div style="font-weight:700;margin-bottom:5px;">Plombier Express</div>
+                        <div style="font-size:0.8rem;color:var(--gray2);">Template : Pro 79€</div>
+                    </div>
+                </div>
+                <div class="kanban-col">
+                    <div class="kanban-header"><span>🛠️ En Création</span><span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:10px;">1</span></div>
+                    <div class="kanban-card">
+                        <div style="font-size:0.75rem;color:var(--primary);margin-bottom:5px;font-weight:700;">En cours</div>
+                        <div style="font-weight:700;margin-bottom:5px;">Salon de Coiffure Élégance</div>
+                        <div style="font-size:0.8rem;color:var(--gray2);">Intégration des photos Instagram...</div>
+                    </div>
+                </div>
+                <div class="kanban-col">
+                    <div class="kanban-header"><span>👀 Validation Client</span><span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:10px;">1</span></div>
+                    <div class="kanban-card">
+                        <div style="font-size:0.75rem;color:var(--success);margin-bottom:5px;font-weight:700;">Lien envoyé</div>
+                        <div style="font-weight:700;margin-bottom:5px;">Garage Auto Pro</div>
+                        <div style="font-size:0.8rem;color:var(--gray2);">Attente de retour sur la page Contact.</div>
+                    </div>
+                </div>
+                <div class="kanban-col">
+                    <div class="kanban-header"><span>✅ Livré & Facturé</span><span style="background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:10px;">0</span></div>
+                    <div style="text-align:center;padding:30px;color:var(--gray2);font-size:0.85rem;border:1px dashed var(--border);border-radius:8px;">Glissez les tâches ici une fois le site validé et l'essai 14j commencé.</div>
+                </div>
+            </div>
         </div>
 
         <!-- PRÉVISIONS -->
@@ -490,7 +548,7 @@ function renderClients(filtered=null) {
         return `<div class="client-row" onclick="openClient(${clients.indexOf(c)})">
             <div class="client-avatar" style="background:${bg};color:${fg}">${getInitials(c.nom)}</div>
             <div><div class="client-name">${c.nom||'—'}</div><div class="client-boutique">${c.boutique||'—'} · ${c.ville||''}</div></div>
-            <div>${getFormuleBadge(c.formule)}<br><span style="font-size:0.72rem;color:var(--gray2);">${c.clientId||''}</span></div>
+            <div>${getFormuleBadge(c.formule)}${c.formule && c.formule.includes('Essai') ? ' <span style="background:rgba(255,215,0,0.2);color:var(--gold);padding:2px 6px;border-radius:4px;font-size:0.65rem;margin-left:4px;">Essai 14j</span>' : ''}<br><span style="font-size:0.72rem;color:var(--gray2);">${c.clientId||''}</span></div>
             <div>${getStatutBadge(c.statut)}</div>
             <div>${getPaiementBadge(c.paiement)}</div>
             <div>${getSiteStatus(c)}</div>
@@ -642,6 +700,12 @@ function openClient(index) {
             </div>
         </div>
         <div class="modal-field"><span class="modal-label">Notes internes</span><textarea class="modal-input" id="editNotes" style="min-height:80px;resize:vertical;">${c.notes||''}</textarea></div>
+        
+        <div class="quick-actions">
+            <a href="https://wa.me/${(c.tel||'').replace(/\D/g,'')}?text=Bonjour ${encodeURIComponent(c.nom||'')}," target="_blank" class="qa-btn qa-wa">💬 WhatsApp</a>
+            <a href="mailto:${c.email||''}" target="_blank" class="qa-btn qa-mail">✉️ Email</a>
+            ${c.siteUrl ? `<a href="${c.siteUrl}" target="_blank" class="qa-btn qa-site">🌐 Voir le site</a>` : ''}
+        </div>
         <div class="modal-actions">
             <button class="btn-save" onclick="saveClient(${index})">💾 Sauvegarder</button>
             <button class="btn-delete-confirm" onclick="confirmDelete(${index})">🗑 Supprimer</button>
