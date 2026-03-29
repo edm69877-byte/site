@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FidélitéPro</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#09090f;
+  --s1:#111118;
+  --s2:#18181f;
+  --s3:#22222c;
+  --border:#2c2c38;
+  --border2:#3a3a48;
+  --text:#ededf5;
+  --muted:#6a6a82;
+  --muted2:#4a4a60;
+  --accent:#00e5b4;
+  --accent-dim:rgba(0,229,180,.12);
+  --accent-dim2:rgba(0,229,180,.06);
+  --purple:#8b7cf8;
+  --purple-dim:rgba(139,124,248,.12);
+  --warn:#f5a623;
+  --warn-dim:rgba(245,166,35,.1);
+  --danger:#f04;
+  --success:#22c55e;
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── VIEWS ── */
+.view{display:none}
+.view.active{display:block}
+
+/* ── NAV ── */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:52px;
+  background:rgba(9,9,15,.85);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;letter-spacing:-.02em}
+.nav-logo span{color:var(--accent)}
+.nav-tabs{display:flex;gap:4px}
+.nav-tab{
+  padding:6px 14px;border-radius:6px;
+  font-size:13px;cursor:pointer;
+  border:1px solid transparent;
+  transition:all .15s;color:var(--muted);
+  font-family:'DM Sans',sans-serif;
+  background:none;
+}
+.nav-tab:hover{color:var(--text);border-color:var(--border)}
+.nav-tab.active{color:var(--accent);background:var(--accent-dim);border-color:rgba(0,229,180,.2)}
+
+/* ═══════════════════════════════════════
+   CLIENT VIEW — INSCRIPTION
+═══════════════════════════════════════ */
+#view-client{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:80px 20px 40px;
+}
+.client-card{
+  width:100%;max-width:420px;
+  background:var(--s1);
+  border:1px solid var(--border);
+  border-radius:20px;
+  overflow:hidden;
+}
+
+/* Card header */
+.client-card-header{
+  padding:32px 28px 24px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.client-card-header::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,229,180,.08) 0%,transparent 70%);
+}
+.client-commerce-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--s2);border:1px solid var(--border);
+  border-radius:8px;padding:6px 12px;
+  font-size:12px;color:var(--muted);
+  font-family:'DM Mono',monospace;
+  margin-bottom:16px;
+}
+.client-commerce-badge .dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent);
+  box-shadow:0 0 6px var(--accent);
+}
+.client-title{
+  font-family:'Syne',sans-serif;
+  font-size:24px;font-weight:700;
+  line-height:1.2;margin-bottom:8px;
+}
+.client-title span{color:var(--accent)}
+.client-sub{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* Rewards preview */
+.reward-preview{
+  display:flex;align-items:center;gap:10px;
+  margin-top:20px;
+  padding:12px 14px;
+  background:var(--accent-dim2);
+  border:1px solid rgba(0,229,180,.15);
+  border-radius:10px;
+}
+.reward-icon{font-size:20px}
+.reward-text{font-size:13px;color:var(--text)}
+.reward-text strong{color:var(--accent)}
+
+/* Stamp visual */
+.stamp-visual{
+  display:flex;gap:6px;flex-wrap:wrap;
+  margin-top:16px;
+}
+.sv-dot{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--s3);border:1.5px solid var(--border2);
+}
+.sv-dot.filled{
+  background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 8px rgba(0,229,180,.3);
+}
+.sv-dot.gift{
+  background:var(--warn-dim);border:1.5px dashed var(--warn);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;
+}
+
+/* Form */
+.client-form{padding:24px 28px}
+.field{margin-bottom:16px}
+.field label{
+  display:block;font-size:12px;color:var(--muted);
+  font-family:'DM Mono',monospace;letter-spacing:.04em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.field input{
+  width:100%;background:var(--s2);
+  border:1px solid var(--border);border-radius:10px;
+  padding:12px 14px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:15px;
+  transition:border-color .15s,box-shadow .15s;
+  outline:none;
+}
+.field input:focus{
+  border-color:rgba(0,229,180,.4);
+  box-shadow:0 0 0 3px rgba(0,229,180,.08);
+}
+.field input::placeholder{color:var(--muted2)}
+.submit-btn{
+  width:100%;padding:14px;border-radius:10px;
+  background:var(--accent);border:none;
+  color:#000;font-size:15px;font-weight:600;
+  font-family:'Syne',sans-serif;cursor:pointer;
+  transition:opacity .15s,transform .1s;
+  letter-spacing:-.01em;
+}
+.submit-btn:hover{opacity:.9}
+.submit-btn:active{transform:scale(.99)}
+.legal{font-size:11px;color:var(--muted2);text-align:center;margin-top:12px;line-height:1.5}
+
+/* Success state */
+.success-state{
+  padding:32px 28px;text-align:center;display:none;
+}
+.success-icon{
+  width:64px;height:64px;border-radius:50%;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin:0 auto 20px;
+}
+.success-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px}
+.success-sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.wallet-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:14px;border-radius:10px;
+  background:#4285f4;border:none;
+  color:#fff;font-size:15px;font-weight:500;
+  font-family:'DM Sans',sans-serif;cursor:pointer;
+  transition:opacity .15s;
+}
+.wallet-btn:hover{opacity:.9}
+.wallet-logo{
+  width:20px;height:20px;border-radius:4px;
+  background:white;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#4285f4;
+  font-family:'DM Mono',monospace;
+}
+
+/* ═══════════════════════════════════════
+   DASHBOARD GÉRANT
+═══════════════════════════════════════ */
+#view-dashboard{padding-top:52px}
+.dash{display:flex;min-height:calc(100vh - 52px)}
+
+/* Sidebar */
+.sidebar{
+  width:200px;flex-shrink:0;
+  background:var(--s1);
+  border-right:1px solid var(--border);
+  padding:20px 0;
+  position:sticky;top:52px;height:calc(100vh - 52px);
+  overflow-y:auto;
+}
+.sb-section{
+  font-size:10px;color:var(--muted2);
+  font-family:'DM Mono',monospace;letter-spacing:.08em;
+  text-transform:uppercase;
+  padding:0 16px;margin:16px 0 6px;
+}
+.sb-link{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px;font-size:13px;color:var(--muted);
+  cursor:pointer;border-left:2px solid transparent;
+  transition:all .12s;
+}
+.sb-link:hover{color:var(--text);background:var(--s2)}
+.sb-link.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim2)}
+.sb-icon{width:16px;height:16px;font-size:14px;flex-shrink:0}
+.sb-badge{
+  margin-left:auto;font-size:10px;
+  background:var(--accent-dim);color:var(--accent);
+  padding:2px 6px;border-radius:20px;
+  font-family:'DM Mono',monospace;
+}
+
+/* Main content */
+.main{flex:1;padding:28px;overflow-x:hidden}
+.page-title{
+  font-family:'Syne',sans-serif;
+  font-size:22px;font-weight:700;
+  margin-bottom:4px;letter-spacing:-.02em;
+}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:24px}
+
+/* Stats grid */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{
+  background:var(--s1);border:1px solid var(--border);
+  border-radius:12px;padding:16px;
+  position:relative;overflow:hidden;
+}
+.stat::after{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:100px;height:100px;border-radius:50%;
+  opacity:.07;
+}
+.stat.teal::after{background:var(--accent)}
+.stat.purple::after{background:var(--purple)}
+.stat.warn::after{background:var(--warn)}
+.stat.green::after{background:var(--success)}
+.stat-label{
+  font-size:10px;color:var(--muted);
+  font-family:'DM Mono',monospace;
+  text-transform:uppercase;letter-spacing:.06em;
+  margin-bottom:8px;
+}
+.stat-val{
+  font-family:'Syne',sans-serif;
+  font-size:28px;font-weight:700;margin-bottom:4px;
+}
+.stat.teal .stat-val{color:var(--accent)}
+.stat.purple .stat-val{color:var(--purple)}
+.stat.warn .stat-val{color:var(--warn)}
+.stat.green .stat-val{color:var(--success)}
+.stat-delta{font-size:11px;color:var(--muted)}
+.stat-delta.up{color:var(--success)}
+
+/* Grid rows */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.grid3{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+
+/* Panel */
+.panel{background:var(--s1);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.ph{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+}
+.ph-title{font-size:13px;font-weight:500}
+.ph-action{
+  font-size:11px;color:var(--accent);cursor:pointer;
+  font-family:'DM Mono',monospace;
+}
+.pb{padding:16px 18px}
+
+/* Chart */
+.chart{height:120px;display:flex;align-items:flex-end;gap:5px}
+.bar-g{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+.bar-v{
+  width:100%;border-radius:3px 3px 0 0;
+  background:linear-gradient(to top,var(--purple),var(--accent));
+  opacity:.75;min-height:3px;
+}
+.bar-l{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace}
+
+/* Client rows */
+.cr{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.cr:last-child{border-bottom:none}
+.cr-av{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--s3);display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;color:var(--muted);flex-shrink:0;
+}
+.cr-info{flex:1;min-width:0}
+.cr-name{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cr-meta{font-size:11px;color:var(--muted)}
+.cr-right{text-align:right;flex-shrink:0}
+.mini-bar{height:3px;background:var(--s3);border-radius:2px;width:56px;margin-top:3px;overflow:hidden}
+.mini-fill{height:100%;border-radius:2px;background:var(--accent)}
+.chip{
+  font-size:10px;padding:2px 7px;border-radius:20px;
+  font-family:'DM Mono',monospace;display:inline-block;
+}
+.chip.active{background:var(--accent-dim);color:var(--accent)}
+.chip.dormant{background:var(--warn-dim);color:var(--warn)}
+.chip.reward{background:var(--purple-dim);color:var(--purple)}
+
+/* Automations */
+.auto{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.auto:last-child{border-bottom:none}
+.auto-icon{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--s2);display:flex;align-items:center;justify-content:center;
+  font-size:15px;flex-shrink:0;
+}
+.auto-info{flex:1}
+.auto-name{font-size:13px;font-weight:500}
+.auto-desc{font-size:11px;color:var(--muted)}
+/* Toggle */
+.toggle{
+  width:34px;height:19px;border-radius:10px;
+  position:relative;cursor:pointer;
+  background:var(--border);border:none;
+  transition:background .2s;flex-shrink:0;
+}
+.toggle.on{background:var(--accent)}
+.toggle::after{
+  content:'';position:absolute;
+  top:2px;left:2px;width:15px;height:15px;
+  border-radius:50%;background:#fff;
+  transition:left .2s;
+}
+.toggle.on::after{left:17px}
+
+/* Activity feed */
+.act{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 0;border-bottom:1px solid var(--border);
+}
+.act:last-child{border-bottom:none}
+.act-d{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.act-d.g{background:var(--success)}
+.act-d.b{background:var(--purple)}
+.act-d.y{background:var(--warn)}
+.act-t{flex:1;font-size:12px}
+.act-time{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap}
+
+/* Scan zone */
+.scan-zone{
+  text-align:center;padding:8px 0;
+}
+.scan-icon{font-size:36px;margin-bottom:8px}
+.scan-title{font-size:13px;font-weight:500;margin-bottom:4px}
+.scan-sub{font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.5}
+.scan-btn-d{
+  width:100%;padding:10px;border-radius:8px;
+  background:var(--accent);border:none;
+  color:#000;font-size:13px;font-weight:600;
+  font-family:'Syne',sans-serif;cursor:pointer;
+  transition:opacity .15s;
+}
+.scan-btn-d:hover{opacity:.85}
+.scan-result{
+  margin-top:10px;padding:8px 12px;border-radius:8px;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);
+  font-size:12px;color:var(--success);display:none;
+}
+
+/* Notif composer */
+.comp{background:var(--s2);border-radius:8px;padding:12px}
+.comp select,.comp textarea{
+  width:100%;background:var(--s1);
+  border:1px solid var(--border);border-radius:8px;
+  padding:9px 12px;color:var(--text);
+  font-family:'DM Sans',sans-serif;font-size:12px;
+  outline:none;transition:border-color .15s;
+  margin-bottom:8px;
+}
+.comp select:focus,.comp textarea:focus{border-color:rgba(0,229,180,.3)}
+.comp textarea{resize:none;line-height:1.5}
+.comp textarea::placeholder{color:var(--muted2)}
+.comp-foot{display:flex;align-items:center;justify-content:space-between}
+.comp-target{font-size:11px;color:var(--muted)}
+.comp-target span{color:var(--accent)}
+.send-btn{
+  padding:7px 16px;border-radius:7px;
+  background:linear-gradient(135deg,var(--purple),var(--accent));
+  border:none;color:#000;font-size:12px;font-weight:600;
+  font-family:'Syne',sans-serif;cursor:pointer;
+}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid2,.grid3{grid-template-columns:1fr}
+  .sidebar{display:none}
+}
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr 1fr}
+  .main{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="top-nav">
+  <div class="nav-logo">Fidélité<span>Pro</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('client')">Inscription client</button>
+    <button class="nav-tab" onclick="showView('dashboard')">Dashboard gérant</button>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════
+     VUE CLIENT
+══════════════════════════════════ -->
+<div id="view-client" class="view active">
+  <div id="view-client" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 20px 40px">
+  <div class="client-card">
+
+    <!-- FORM STATE -->
+    <div id="form-state">
+      <div class="client-card-header">
+        <div class="client-commerce-badge">
+          <div class="dot"></div>
+          Le Bab'Original · Amiens
+        </div>
+        <div class="client-title">Rejoins le <span>club fidélité</span></div>
+        <div class="client-sub">Collecte des tampons à chaque passage et débloque des récompenses.</div>
+
+        <div class="reward-preview">
+          <div class="reward-icon">🎁</div>
+          <div class="reward-text">10 tampons = <strong>1 kebab offert</strong></div>
+        </div>
+
+        <div class="stamp-visual" style="margin-top:16px">
+          <div class="sv-dot filled"></div>
+          <div class="sv-dot filled"></div>
+          <div class="sv-dot filled"></div>
+          <div class="sv-dot"></div>
+          <div class="sv-dot"></div>
+          <div class="sv-dot"></div>
+          <div class="sv-dot"></div>
+          <div class="sv-dot"></div>
+          <div class="sv-dot"></div>
+          <div class="sv-dot gift">🎁</div>
+        </div>
+      </div>
+
+      <div class="client-form">
+        <div class="field">
+          <label>Prénom</label>
+          <input type="text" id="f-prenom" placeholder="Mohamed" autocomplete="given-name">
+        </div>
+        <div class="field">
+          <label>Numéro de téléphone</label>
+          <input type="tel" id="f-tel" placeholder="06 12 34 56 78" autocomplete="tel">
+        </div>
+        <button class="submit-btn" onclick="submitForm()">
+          Créer ma carte &rarr;
+        </button>
+        <div class="legal">En créant ta carte, tu acceptes de recevoir des notifications de la part du commerce. Pas de spam.</div>
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="success-state" class="success-state">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Carte créée !</div>
+      <div class="success-sub">Ta carte de fidélité est prête. Ajoute-la à Google Wallet pour l'avoir toujours sur toi.</div>
+      <button class="wallet-btn" onclick="addToWallet()">
+        <div class="wallet-logo">G</div>
+        Ajouter à Google Wallet
+      </button>
+      <div style="margin-top:12px;font-size:12px;color:var(--muted)">
+        Tu recevras une notification quand tu approches de ta récompense.
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     DASHBOARD GÉRANT
+══════════════════════════════════ -->
+<div id="view-dashboard" class="view">
+<div class="dash">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-section">Vue d'ensemble</div>
+    <div class="sb-link active"><span class="sb-icon">📊</span> Dashboard</div>
+    <div class="sb-link"><span class="sb-icon">👥</span> Clients <span class="sb-badge">52</span></div>
+    <div class="sb-section">Outils</div>
+    <div class="sb-link"><span class="sb-icon">📷</span> Scanner</div>
+    <div class="sb-link"><span class="sb-icon">📣</span> Campagnes</div>
+    <div class="sb-link"><span class="sb-icon">🔔</span> Notifications</div>
+    <div class="sb-section">Compte</div>
+    <div class="sb-link"><span class="sb-icon">⚙️</span> Paramètres</div>
+    <div class="sb-link"><span class="sb-icon">❓</span> Aide</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="page-title">Bonjour Karim 👋</div>
+    <div class="page-sub">Voici l'activité de ton programme fidélité — mars 2025</div>
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat teal">
+        <div class="stat-label">Clients actifs</div>
+        <div class="stat-val">52</div>
+        <div class="stat-delta up">↑ +11 ce mois</div>
+      </div>
+      <div class="stat purple">
+        <div class="stat-label">Tampons validés</div>
+        <div class="stat-val">214</div>
+        <div class="stat-delta up">↑ +31% vs mois dernier</div>
+      </div>
+      <div class="stat warn">
+        <div class="stat-label">Proches récompense</div>
+        <div class="stat-val">8</div>
+        <div class="stat-delta">à 8, 9 ou 10/10</div>
+      </div>
+      <div class="stat green">
+        <div class="stat-label">Kebabs offerts</div>
+        <div class="stat-val">14</div>
+        <div class="stat-delta up">taux rétention 71%</div>
+      </div>
+    </div>
+
+    <!-- CHART + SCAN -->
+    <div class="grid3">
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">Tampons par jour — cette semaine</span>
+          <span class="ph-action">tout voir →</span>
+        </div>
+        <div class="pb">
+          <div class="chart" id="chart"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-title">Scanner un client</span></div>
+        <div class="pb">
+          <div class="scan-zone">
+            <div class="scan-icon">📷</div>
+            <div class="scan-title">Valider un tampon</div>
+            <div class="scan-sub">Le client présente son QR code depuis son Wallet.</div>
+            <button class="scan-btn-d" onclick="simulateScan()">Ouvrir le scanner</button>
+            <div class="scan-result" id="scan-result">✓ Tampon validé — Mohamed A. (7 → 8)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLIENTS + ACTIVITÉ -->
+    <div class="grid2">
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">Clients récents</span>
+          <span class="ph-action">voir tout →</span>
+        </div>
+        <div class="pb" id="clients-list"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-title">Activité en direct</span></div>
+        <div class="pb" id="activity"></div>
+      </div>
+    </div>
+
+    <!-- AUTOMATISATIONS + NOTIF -->
+    <div class="grid2">
+      <div class="panel">
+        <div class="ph">
+          <span class="ph-title">Automatisations</span>
+          <span class="ph-action">configurer →</span>
+        </div>
+        <div class="pb" id="autos"></div>
+      </div>
+      <div class="panel">
+        <div class="ph"><span class="ph-title">Envoyer une notification</span></div>
+        <div class="pb">
+          <div class="comp">
+            <select id="notif-target" onchange="updateTarget()">
+              <option value="52">Tous les clients (52)</option>
+              <option value="8">Proches de la récompense (8)</option>
+              <option value="13">Clients dormants (13)</option>
+            </select>
+            <textarea id="notif-msg" rows="3" placeholder="Ex : Happy hour ce soir 18h–20h, double tampons !"></textarea>
+            <div class="comp-foot">
+              <div class="comp-target">→ <span id="target-count">52</span> clients</div>
+              <button class="send-btn" onclick="sendNotif()">Envoyer 🚀</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</div>
+
+<script>
+// ── NAVIGATION ──
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+  if(v==='client'){
+    document.getElementById('view-client').classList.add('active');
+    document.querySelectorAll('.nav-tab')[0].classList.add('active');
+  } else {
+    document.getElementById('view-dashboard').classList.add('active');
+    document.querySelectorAll('.nav-tab')[1].classList.add('active');
+  }
+}
+
+// ── CLIENT FORM ──
+function submitForm(){
+  const prenom=document.getElementById('f-prenom').value.trim();
+  const tel=document.getElementById('f-tel').value.trim();
+  if(!prenom||!tel){
+    document.getElementById('f-prenom').style.borderColor='rgba(255,0,68,.4)';
+    return;
+  }
+  document.getElementById('form-state').style.display='none';
+  document.getElementById('success-state').style.display='block';
+}
+function addToWallet(){
+  alert('En production : redirige vers l\'API Google Wallet pour générer le pass .pkpass et l\'ajouter au Wallet du client.');
+}
+
+// ── CHART ──
+const days=['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+const vals=[12,19,14,31,28,48,22];
+const mx=Math.max(...vals);
+const ch=document.getElementById('chart');
+if(ch){
+  days.forEach((d,i)=>{
+    const h=Math.round(vals[i]/mx*108);
+    ch.innerHTML+=`<div class="bar-g"><div class="bar-v" style="height:${h}px"></div><div class="bar-l">${d}</div></div>`;
+  });
+}
+
+// ── CLIENTS ──
+const clients=[
+  {n:'Mohamed A.',m:'Passage il y a 2j',s:7,status:'active'},
+  {n:'Karim B.',m:'Récompense disponible',s:10,status:'reward'},
+  {n:'Sarah M.',m:'Inscrite il y a 3 sem.',s:4,status:'active'},
+  {n:'Lucas D.',m:'Absent depuis 25j',s:2,status:'dormant'},
+  {n:'Nadia K.',m:'Passage hier',s:8,status:'active'},
+  {n:'Amine R.',m:'Passage aujourd\'hui',s:9,status:'active'},
+];
+const cl=document.getElementById('clients-list');
+if(cl) clients.forEach(c=>{
+  const pct=Math.round(c.s/10*100);
+  const chip=c.status==='reward'?'reward':c.status==='dormant'?'dormant':'active';
+  const label=c.status==='reward'?'🎁 RÉCOMPENSE':c.status==='dormant'?'DORMANT':'ACTIF';
+  cl.innerHTML+=`<div class="cr">
+    <div class="cr-av">${c.n.split(' ').map(x=>x[0]).join('')}</div>
+    <div class="cr-info">
+      <div class="cr-name">${c.n}</div>
+      <div class="cr-meta">${c.m}</div>
+    </div>
+    <div class="cr-right">
+      <div class="chip ${chip}">${label}</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">${c.s}/10</div>
+      <div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div>
+    </div>
+  </div>`;
+});
+
+// ── ACTIVITY ──
+const acts=[
+  {d:'g',t:'Mohamed A. — tampon validé (7/10)',time:'14:32'},
+  {d:'b',t:'Notif envoyée · 52 clients',time:'12:00'},
+  {d:'g',t:'Amine R. — tampon validé (9/10)',time:'11:48'},
+  {d:'b',t:'Karim B. — récompense réclamée',time:'10:15'},
+  {d:'g',t:'Sarah M. — nouvelle inscription',time:'09:52'},
+  {d:'y',t:'Lucas D. — relance auto envoyée',time:'09:00'},
+];
+const af=document.getElementById('activity');
+if(af) acts.forEach(a=>{
+  af.innerHTML+=`<div class="act"><div class="act-d ${a.d}"></div><div class="act-t">${a.t}</div><div class="act-time">${a.time}</div></div>`;
+});
+
+// ── AUTOMATIONS ──
+const autos=[
+  {icon:'⭐',n:'Demande d\'avis Google',d:'1h après chaque passage',on:true},
+  {icon:'😴',n:'Relance clients dormants',d:'Absent depuis 21 jours',on:true},
+  {icon:'🎁',n:'Notif approche récompense',d:'Dès 8 tampons atteints',on:true},
+  {icon:'📅',n:'Promo hebdo lundi',d:'Chaque lundi à 9h00',on:false},
+];
+const au=document.getElementById('autos');
+if(au) autos.forEach((a,i)=>{
+  au.innerHTML+=`<div class="auto">
+    <div class="auto-icon">${a.icon}</div>
+    <div class="auto-info">
+      <div class="auto-name">${a.n}</div>
+      <div class="auto-desc">${a.d}</div>
+    </div>
+    <button class="toggle ${a.on?'on':''}" onclick="this.classList.toggle('on')"></button>
+  </div>`;
+});
+
+// ── SCAN ──
+function simulateScan(){
+  const r=document.getElementById('scan-result');
+  r.style.display='block';
+  setTimeout(()=>r.style.display='none',3000);
+}
+
+// ── NOTIF ──
+function updateTarget(){
+  document.getElementById('target-count').textContent=
+    document.getElementById('notif-target').value;
+}
+function sendNotif(){
+  const msg=document.getElementById('notif-msg').value.trim();
+  if(!msg){document.getElementById('notif-msg').style.borderColor='rgba(255,0,68,.4)';return;}
+  alert('✓ Notification envoyée à '+document.getElementById('target-count').textContent+' clients !');
+  document.getElementById('notif-msg').value='';
+}
+</script>
+</body>
+</html>
